@@ -1,0 +1,10 @@
+@startuml er_diagram
+!include tables.pu
+
+Participant ||--{ ProgressTable : check status
+Participant ||--|| MatchApplicants : apply for match
+Participant ||--{ MatchResults : record result
+ProgressTable ||--|| MatchApplicants : matching
+MatchResults ||--{ GameScores : record scores
+
+@enduml

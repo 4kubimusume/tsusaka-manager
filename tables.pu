@@ -1,0 +1,42 @@
+@startuml tables
+entity "参加者" as Participant {
+  + participant_id : int [PK]
+  --
+  * name : string
+  * email : string
+  * type : string
+  * birthdate : date
+}
+
+entity "進行状況テーブル" as ProgressTable {
+  + match_id : int [PK]
+  --
+  * participant_id_1 : int [FK]
+  * participant_id_2 : int [FK]
+  * status : enum('pending', 'in_progress', 'completed')
+  * table_number : int
+}
+
+entity "試合希望者テーブル" as MatchApplicants {
+  + participant_id : int [FK]
+  --
+  * type : enum('highschool_student', 'university_student', 'working_adult')
+  * queque_number : int
+}
+
+entity "試合結果テーブル" as MatchResults {
+  + match_id : int [FK]
+  --
+  * winner_id : int [FK]
+}
+
+entity "ゲームスコアテーブル" as GameScores {
+  + game_id : int [PK]
+  --
+  * match_id : int [FK]
+  * game_number : int
+  * score_p1 : int
+  * score_p2 : int
+}
+
+@enduml
