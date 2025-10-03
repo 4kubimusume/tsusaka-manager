@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Participants</title>
+</head>
+<body>
+    <h1>Participants</h1>
+    <ul>
+        {% for p in participants %}
+            <li>{{ p.name }} ({{ p.email }})</li>
+        {% empty %}
+            <li>No participants yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
