@@ -12,3 +12,8 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 ブラウザで`http://127.0.0.1:8000/admin/`にアクセス
+
+テスト実行
+```
+python manage.py test
+```
