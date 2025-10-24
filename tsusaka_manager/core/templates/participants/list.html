@@ -5,9 +5,12 @@
 </head>
 <body>
     <h1>Participants</h1>
+    <a href="{% url 'participant_create' %}">+ Add New Participant</a>
     <ul>
         {% for p in participants %}
-            <li>{{ p.name }} ({{ p.email }})</li>
+            <li>{{ p.name }} ({{ p.email }})
+                — <a href="{% url 'participant_edit' p.id %}">Edit</a>
+            </li>
         {% empty %}
             <li>No participants yet.</li>
         {% endfor %}
