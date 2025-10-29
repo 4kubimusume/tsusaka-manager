@@ -47,7 +47,14 @@ class ParticipantViewTest(TestCase):
         self.assertEqual(self.p1.name, "Updated User")
         self.assertEqual(self.p1.email, "updated@example.com")
 
-    # def test_delete_view(self):
-    #     response = self.client.post(reverse('participant_delete', args=[self.p1.id]))
-    #     self.assertEqual(response.status_code, 302)
-    #     self.assertFalse(Participant.objects.filter(id=self.p1.id).exists())
+    def test_delete_view(self):
+        p = Participant.objects.create(
+            name="Delete Me",
+            email="delete@example.com",
+            type="student",
+        )
+        response = self.client.post(reverse('participant_delete', args=[p.id]))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('participant_list'))
+        self.assertFalse(Participant.objects.filter(id=p.id).exists())
+

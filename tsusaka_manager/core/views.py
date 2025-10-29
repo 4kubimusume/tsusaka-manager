@@ -26,3 +26,10 @@ def participant_edit(request, participant_id):
     else:
         form = ParticipantForm(instance=participant)
     return render(request, 'participants/form.html', {'form': form})
+
+def participant_delete(request, participant_id):
+    participant = get_object_or_404(Participant, pk=participant_id)
+    if request.method == 'POST':
+        participant.delete()
+        return redirect('participant_list')
+    return render(request, 'participants/confirm_delete.html', {'participant': participant})

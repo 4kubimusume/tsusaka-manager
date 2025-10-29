@@ -10,6 +10,7 @@
         {% for p in participants %}
             <li>{{ p.name }} ({{ p.email }})
                 — <a href="{% url 'participant_edit' p.id %}">Edit</a>
+                — <a href="{% url 'participant_delete' p.id %}">Delete</a>
             </li>
         {% empty %}
             <li>No participants yet.</li>
