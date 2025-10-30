@@ -58,3 +58,49 @@ class ParticipantViewTest(TestCase):
         self.assertRedirects(response, reverse('participant_list'))
         self.assertFalse(Participant.objects.filter(id=p.id).exists())
 
+class ParticipantInvalidInputTest(TestCase):
+
+    def test_create_with_empty_name(self):
+        response = self.client.post(reverse('participant_create'), {
+            "name": "",
+            "email": "valid@example.com",
+            "type": "student",
+        })
+        # print(response.status_code)
+        # print(response.context)
+        self.assertEqual(response.status_code, 200)
+        # self.assertFormError(response, 'form', 'name', 'このフィールドは必須です。')
+        self.assertFormError(response.context['form'], 'name', 'This field is required.')
+        self.assertEqual(Participant.objects.count(), 0)
+
+    def test_create_with_invalid_email(self):
+        response = self.client.post(reverse('participant_create'), {
+            "name": "Bad Email",
+            "email": "notanemail",
+            "type": "student",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'email', '有効なメールアドレスを入力してください。')
+        self.assertEqual(Participant.objects.count(), 0)
+
+    def test_edit_nonexistent_participant(self):
+        """存在しないIDで編集しようとしたら404"""
+        response = self.client.get(reverse('participant_edit', args=[999]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_with_get_does_not_delete(self):
+        """GETアクセスでは削除しない"""
+        p = Participant.objects.create(
+            name="Safe User",
+            email="safe@example.com",
+            type="student"
+        )
+        response = self.client.get(reverse('participant_delete', args=[p.id]))
+        self.assertEqual(response.status_code, 200)
+        # GETでは削除されていない
+        self.assertTrue(Participant.objects.filter(id=p.id).exists())
+
+    def test_delete_nonexistent_participant(self):
+        """存在しないIDを削除しようとしたら404"""
+        response = self.client.post(reverse('participant_delete', args=[999]))
+        self.assertEqual(response.status_code, 404)
