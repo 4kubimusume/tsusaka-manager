@@ -47,9 +47,9 @@ class Match(models.Model):
     player1 = models.ForeignKey(Participant, related_name='matches_as_player1', on_delete=models.CASCADE)
     player2 = models.ForeignKey(Participant, related_name='matches_as_player2', on_delete=models.CASCADE)
     table_number = models.IntegerField(null=True, blank=True)
-    score_player1 = models.CharField(max_length=20, blank=True)  # 例: "11-8, 8-11, 11-9"
-    score_player2 = models.CharField(max_length=20, blank=True)
-    winner = models.ForeignKey(Participant, related_name='wins', null=True, blank=True, on_delete=models.SET_NULL)
+    score_player1 = models.CharField(max_length=20)  # 例: "11-8, 8-11, 11-9"
+    score_player2 = models.CharField(max_length=20)
+    winner = models.ForeignKey(Participant, related_name='wins', null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f"{self.player1.name} vs {self.player2.name}"

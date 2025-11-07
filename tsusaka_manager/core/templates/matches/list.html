@@ -3,9 +3,16 @@
 <head><title>Matches</title></head>
 <body>
     <h1>Match List</h1>
+    <a href="{% url 'match_create' %}">＋ Add New Match</a>
     <ul>
         {% for m in matches %}
-            <li>{{ m.player1.name }} vs {{ m.player2.name }} (Table {{ m.table_number }})</li>
+            <li>
+                {{ m.player1.name }} vs {{ m.player2.name }} (Table {{ m.table_number }})
+                {% if m.score_player1 %}
+                    — Score: {{ m.score_player1 }} / {{ m.score_player2 }}
+                {% endif %}
+                <a href="{% url 'match_edit' m.id %}">Edit</a>
+            </li>
         {% empty %}
             <li>No matches yet.</li>
         {% endfor %}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Match</title>
+</head>
+<body>
+    <h1>Update Match Result</h1>
+    <p>{{ match.player1.name }} vs {{ match.player2.name }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+
+    <a href="{% url 'match_list' %}">Back to list</a>
+</body>
+</html>

@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from .models import Participant
+from .models import Participant, Match
 
 class ParticipantModelTest(TestCase):
     def test_create_participant(self):
@@ -97,3 +97,64 @@ class ParticipantInvalidInputTest(TestCase):
     def test_delete_nonexistent_participant(self):
         response = self.client.post(reverse('participant_delete', args=[999]))
         self.assertEqual(response.status_code, 404)
+
+class MatchScoreTest(TestCase):
+    def setUp(self):
+        self.p1 = Participant.objects.create(
+            name="Player 1",
+            email="p1@example.com",
+            type="student"
+        )
+        self.p2 = Participant.objects.create(
+            name="Player 2",
+            email="p2@example.com",
+            type="student"
+        )
+        self.match = Match.objects.create(
+            player1=self.p1,
+            player2=self.p2,
+            table_number=1
+        )
+
+    def test_update_score_and_winner(self):
+        response = self.client.post(reverse('match_edit', args=[self.match.id]), {
+            "score_player1": "11-8, 11-9",
+            "score_player2": "8-11, 9-11",
+            "winner": self.p1.id
+        })
+        self.assertEqual(response.status_code, 302)
+        self.match.refresh_from_db()
+        self.assertEqual(self.match.score_player1, "11-8, 11-9")
+        self.assertEqual(self.match.winner, self.p1)
+
+class MatchScoreInvalidTest(TestCase):
+    def setUp(self):
+        self.p1 = Participant.objects.create(
+            name="Player 1",
+            email="p1@example.com",
+            type="student"
+        )
+        self.p2 = Participant.objects.create(
+            name="Player 2",
+            email="p2@example.com",
+            type="student"
+        )
+        self.match = Match.objects.create(
+            player1=self.p1,
+            player2=self.p2,
+            table_number=1
+        )
+
+    def test_edit_nonexistent_match(self):
+        response = self.client.get(reverse('match_edit', args=[999]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_invalid_post_data(self):
+        response = self.client.post(reverse('match_edit', args=[self.match.id]), {
+            "score_player1": "",  # 空スコア
+            "score_player2": "",
+            "winner": ""          # 勝者未選択
+        })
+        self.assertEqual(response.status_code, 200)  # エラーで再表示される
+        self.match.refresh_from_db()
+        self.assertEqual(self.match.score_player1, "")  # 値が更新されていない

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Participant, Match
-from .forms import ParticipantForm
+from .forms import ParticipantForm, MatchForm, MatchScoreForm
 
 def participant_list(request):
     participants = Participant.objects.all()
@@ -37,3 +37,24 @@ def participant_delete(request, participant_id):
 def match_list(request):
     matches = Match.objects.all().select_related('player1', 'player2')
     return render(request, 'matches/list.html', {'matches': matches})
+
+def match_create(request):
+    if request.method == 'POST':
+        form = MatchForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('match_list')
+    else:
+        form = MatchForm()
+    return render(request, 'matches/form.html', {'form': form})
+
+def match_edit(request, match_id):
+    match = get_object_or_404(Match, pk=match_id)
+    if request.method == 'POST':
+        form = MatchScoreForm(request.POST, instance=match)
+        if form.is_valid():
+            form.save()
+            return redirect('match_list')
+    else:
+        form = MatchScoreForm(instance=match)
+    return render(request, 'matches/edit.html', {'form': form, 'match': match})
