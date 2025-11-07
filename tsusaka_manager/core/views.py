@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Participant
+from .models import Participant, Match
 from .forms import ParticipantForm
 
 def participant_list(request):
@@ -33,3 +33,7 @@ def participant_delete(request, participant_id):
         participant.delete()
         return redirect('participant_list')
     return render(request, 'participants/confirm_delete.html', {'participant': participant})
+
+def match_list(request):
+    matches = Match.objects.all().select_related('player1', 'player2')
+    return render(request, 'matches/list.html', {'matches': matches})

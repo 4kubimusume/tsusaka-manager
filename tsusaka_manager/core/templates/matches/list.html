@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>Matches</title></head>
+<body>
+    <h1>Match List</h1>
+    <ul>
+        {% for m in matches %}
+            <li>{{ m.player1.name }} vs {{ m.player2.name }} (Table {{ m.table_number }})</li>
+        {% empty %}
+            <li>No matches yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
